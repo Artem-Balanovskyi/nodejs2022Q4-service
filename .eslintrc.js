@@ -26,5 +26,10 @@ module.exports = {
         "endOfLine": "auto"
       },
     ],
+    "indent": [
+			true,
+			"tabs",
+			4
+		],
   },
 };

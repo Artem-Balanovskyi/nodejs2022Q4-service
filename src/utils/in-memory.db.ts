@@ -48,7 +48,14 @@ export class InMemoryDB {
             "grammy": false
         }
     ];
-    public albums: AlbumEntity[] = [];
+    public albums: AlbumEntity[] = [
+        {
+            "id": "240f33c4-979a-4da1-b8b5-7618f27ec400",
+            "name": "First Album",
+            "year": 2020,
+            "artistId": "5a76c653-8128-41bb-acfe-dd9f7eae110d"
+        }
+    ];
     public favorites: FavoritesEntity = {
         artists: [],
         albums: [],

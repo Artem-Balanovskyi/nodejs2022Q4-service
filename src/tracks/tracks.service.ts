@@ -11,7 +11,7 @@ export class TracksService {
 
   constructor(private db: InMemoryDB) { }
 
-  create(dto: CreateTrackDto) {
+  create(dto: CreateTrackDto): TrackEntity {
     const newTrack: TrackEntity = {
       id: uuidv4(),
       ...dto
@@ -32,7 +32,7 @@ export class TracksService {
     }
   }
 
-  update(id: string, dto: UpdateTrackDto): TrackEntity | null {
+  update(id: string, dto: UpdateTrackDto): TrackEntity {
     const track: TrackEntity | null = this.findOne(id);
     const { name, artistId, albumId, duration } = { ... dto};
     if (name !== undefined) track.name = name;

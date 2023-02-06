@@ -46,6 +46,7 @@ export class AlbumsService {
     const { name, year, artistId } = { ... dto};
     if (name !== undefined) album.name = name;
     if (year !== undefined) album.year = year;  
+    if (artistId !== undefined) album.artistId = artistId;  
     return album;
   }
 

@@ -18,22 +18,18 @@ export class UsersService {
       ...dto,
       version: 1,
       createdAt: +new Date(),
-      updatedAt: null
+      updatedAt: +new Date()
     }
     this.db.users.push(newUser);
-    // return newUser;
-    // If you want to see the user's passwords in response - uncomment the line above and comment the lines below.
     const response: UserEntity = { ...newUser };
-    response.password = '*******';
+    delete response.password;
     return response;
   }
 
   findAll(): UserEntity[] {
-    // return this.db.users;
-    // If you want to see the user's passwords in response - uncomment the line above and comment the lines below.
     const users = this.db.users;
     let response = structuredClone(users).map((user) => {
-      user.password = '*******';
+      delete user.password;
       return user;
     })
     return response;
@@ -43,10 +39,8 @@ export class UsersService {
     const user: UserEntity | null = this.db.users.find(user => user.id === id);
     if (!user) throwException(USER_NOT_FOUND, 404);
     else {
-      // return user;
-      // If you want to see the user's passwords in response - uncomment the line above and comment the lines below.
       const response: UserEntity = { ...user };
-      response.password = '*******';
+      delete response.password;
       return response;
     }
   }
@@ -61,10 +55,8 @@ export class UsersService {
       user.version += 1;
       user.updatedAt = +new Date();
       user.password = newPassword;
-      // return user;
-      // If you want to see the user's passwords in response - uncomment the line above and comment the lines below.
       const response: UserEntity = { ...user };
-      response.password = '*******';
+      delete response.password;
       return response;
     }
   }

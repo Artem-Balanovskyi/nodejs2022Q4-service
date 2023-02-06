@@ -1,14 +1,20 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { ArtistsController } from './artists.controller';
 import { InMemoryDB } from 'src/utils/in-memory.db';
-import { AlbumsService } from 'src/albums/albums.service';
-import { FavoritesService } from 'src/favorites/favorites.service';
-import { TracksService } from 'src/tracks/tracks.service';
+import { FavoritesModule } from 'src/favorites/favorites.module';
+import { AlbumsModule } from 'src/albums/albums.module';
+import { TracksModule } from 'src/tracks/tracks.module';
 
 
 @Module({
   controllers: [ArtistsController],
-  providers: [ArtistsService, InMemoryDB, AlbumsService, FavoritesService, TracksService]
+  providers: [ArtistsService, InMemoryDB],
+  exports: [ArtistsService],
+  imports: [
+    forwardRef(() => FavoritesModule),
+    forwardRef(() => AlbumsModule),
+    forwardRef(() => TracksModule)
+  ]
 })
-export class ArtistsModule {}
+export class ArtistsModule { }

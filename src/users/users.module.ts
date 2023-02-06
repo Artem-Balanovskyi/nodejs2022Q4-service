@@ -7,4 +7,4 @@ import { InMemoryDB } from 'src/utils/in-memory.db';
   controllers: [UsersController],
   providers: [UsersService, InMemoryDB]
 })
-export class UsersModule {}
+export class UsersModule { }

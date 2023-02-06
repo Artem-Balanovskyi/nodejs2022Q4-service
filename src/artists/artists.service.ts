@@ -1,26 +1,47 @@
 import { Injectable } from '@nestjs/common';
+import { InMemoryDB } from 'src/utils/in-memory.db';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { v4 as uuidv4 } from 'uuid';
+import { throwException } from 'src/utils/throwException';
+import { ArtistEntity } from './entities/artist.entity';
 
 @Injectable()
 export class ArtistsService {
-  create(createArtistDto: CreateArtistDto) {
-    return 'This action adds a new artist';
+
+  constructor(private db: InMemoryDB) { }
+
+  create(dto: CreateArtistDto): ArtistEntity {
+    const newArtist: ArtistEntity = {
+      id: uuidv4(),
+      ...dto
+    }
+    this.db.artists.push(newArtist);
+    return newArtist;
   }
 
-  findAll() {
-    return `This action returns all artists`;
+  findAll(): ArtistEntity[] {
+    return this.db.artists;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} artist`;
+  findOne(id: string): ArtistEntity {
+    const artist: ArtistEntity | null = this.db.artists.find(artist => artist.id === id);
+    if (!artist) throwException(`User with id: ${id} was not found.`, 404);
+    else {
+      return artist;
+    }
   }
 
-  update(id: number, updateArtistDto: UpdateArtistDto) {
-    return `This action updates a #${id} artist`;
+  update(id: string, dto: UpdateArtistDto) {
+    const artist = this.findOne(id);
+    artist.name = dto.name;
+    artist.grammy = dto.grammy;    
+    return artist;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} artist`;
+
+  remove(id: string) {
+    this.findOne(id);
+    this.db.artists = this.db.artists.filter(artist => artist.id !== id);
   }
 }

@@ -1,5 +1,5 @@
 export class FavoritesEntity {
-  artists: string[]; // favorite artists ids
   albums: string[]; // favorite albums ids
+  artists: string[]; // favorite artists ids
   tracks: string[]; // favorite tracks ids
 }

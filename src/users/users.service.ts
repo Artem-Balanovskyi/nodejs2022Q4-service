@@ -5,6 +5,7 @@ import { InMemoryDB } from 'src/utils/in-memory.db';
 import { v4 as uuidv4 } from 'uuid';
 import { throwException } from 'src/utils/throwException';
 import { UserEntity } from './entities/user.entity';
+import { PASSWORD_NOT_CORRECT, USER_NOT_FOUND } from 'src/utils/messages';
 
 @Injectable()
 export class UsersService {
@@ -40,7 +41,7 @@ export class UsersService {
   
   findOne(id: string): UserEntity {
     const user: UserEntity | null = this.db.users.find(user => user.id === id);
-    if (!user) throwException(`User with id: ${id} was not found.`, 404);
+    if (!user) throwException(USER_NOT_FOUND, 404);
     else {
       // return user;
       // If you want to see the user's passwords in response - uncomment the line above and comment the lines below.
@@ -53,9 +54,9 @@ export class UsersService {
   update(id: string, dto: UpdatePasswordDto): UserEntity {
     const { oldPassword, newPassword } = dto;
     const user: UserEntity | null = this.db.users.find(user => user.id === id);
-    if (!user) throwException(`User with id: ${id} was not found.`, 404);
+    if (!user) throwException(USER_NOT_FOUND, 404);
     if (user.password !== oldPassword) {
-      throwException(`The password is not correct.`, 403)
+      throwException(PASSWORD_NOT_CORRECT, 403)
     } else {
       user.version += 1;
       user.updatedAt = +new Date();

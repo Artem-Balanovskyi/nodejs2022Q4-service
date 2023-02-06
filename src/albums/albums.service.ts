@@ -11,20 +11,19 @@ import { ALBUM_NOT_FOUND } from 'src/utils/messages';
 
 @Injectable()
 export class AlbumsService {
-
   constructor(
     private db: InMemoryDB,
     @Inject(forwardRef(() => FavoritesService))
     private favoritesService: FavoritesService,
     @Inject(forwardRef(() => TracksService))
     private tracksService: TracksService,
-    ) {}
-  
+  ) {}
+
   create(dto: CreateAlbumDto): AlbumEntity {
     const newAlbum: AlbumEntity = {
       id: uuidv4(),
-      ...dto
-    }
+      ...dto,
+    };
     this.db.albums.push(newAlbum);
     return newAlbum;
   }
@@ -34,7 +33,9 @@ export class AlbumsService {
   }
 
   findOne(id: string): AlbumEntity {
-    const album: AlbumEntity | null = this.db.albums.find(album => album.id === id);
+    const album: AlbumEntity | null = this.db.albums.find(
+      (album) => album.id === id,
+    );
     if (!album) throwException(ALBUM_NOT_FOUND, 404);
     else {
       return album;
@@ -43,16 +44,16 @@ export class AlbumsService {
 
   update(id: string, dto: UpdateAlbumDto): AlbumEntity {
     const album: AlbumEntity | null = this.findOne(id);
-    const { name, year, artistId } = { ... dto};
+    const { name, year, artistId } = { ...dto };
     if (name !== undefined) album.name = name;
-    if (year !== undefined) album.year = year;  
-    if (artistId !== undefined) album.artistId = artistId;  
+    if (year !== undefined) album.year = year;
+    if (artistId !== undefined) album.artistId = artistId;
     return album;
   }
 
   remove(id: string): void {
     this.findOne(id);
-    this.db.albums = this.db.albums.filter(album => album.id !== id);
+    this.db.albums = this.db.albums.filter((album) => album.id !== id);
     this.favoritesService.removeAlbum(id);
     this.tracksService.deleteAlbumId(id);
   }
@@ -63,7 +64,6 @@ export class AlbumsService {
         item.artistId = null;
         this.db.albums[index] = item;
       }
-    })
+    });
   }
-
 }

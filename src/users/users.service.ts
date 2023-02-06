@@ -9,8 +9,7 @@ import { PASSWORD_NOT_CORRECT, USER_NOT_FOUND } from 'src/utils/messages';
 
 @Injectable()
 export class UsersService {
-
-  constructor(private db: InMemoryDB) { }
+  constructor(private db: InMemoryDB) {}
 
   create(dto: CreateUserDto): UserEntity {
     const newUser: UserEntity = {
@@ -18,8 +17,8 @@ export class UsersService {
       ...dto,
       version: 1,
       createdAt: +new Date(),
-      updatedAt: +new Date()
-    }
+      updatedAt: +new Date(),
+    };
     this.db.users.push(newUser);
     const response: UserEntity = { ...newUser };
     delete response.password;
@@ -28,15 +27,17 @@ export class UsersService {
 
   findAll(): UserEntity[] {
     const users = this.db.users;
-    let response = structuredClone(users).map((user) => {
+    const response = structuredClone(users).map((user) => {
       delete user.password;
       return user;
-    })
+    });
     return response;
   }
-  
+
   findOne(id: string): UserEntity {
-    const user: UserEntity | null = this.db.users.find(user => user.id === id);
+    const user: UserEntity | null = this.db.users.find(
+      (user) => user.id === id,
+    );
     if (!user) throwException(USER_NOT_FOUND, 404);
     else {
       const response: UserEntity = { ...user };
@@ -47,10 +48,12 @@ export class UsersService {
 
   update(id: string, dto: UpdatePasswordDto): UserEntity {
     const { oldPassword, newPassword } = dto;
-    const user: UserEntity | null = this.db.users.find(user => user.id === id);
+    const user: UserEntity | null = this.db.users.find(
+      (user) => user.id === id,
+    );
     if (!user) throwException(USER_NOT_FOUND, 404);
     if (user.password !== oldPassword) {
-      throwException(PASSWORD_NOT_CORRECT, 403)
+      throwException(PASSWORD_NOT_CORRECT, 403);
     } else {
       user.version += 1;
       user.updatedAt = +new Date();
@@ -63,6 +66,6 @@ export class UsersService {
 
   remove(id: string): void {
     this.findOne(id);
-    this.db.users = this.db.users.filter(user => user.id !== id);
+    this.db.users = this.db.users.filter((user) => user.id !== id);
   }
 }

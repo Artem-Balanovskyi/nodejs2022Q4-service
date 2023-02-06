@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, HttpCode, ParseUUIDPipe, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  HttpCode,
+  ParseUUIDPipe,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
@@ -24,7 +35,10 @@ export class ArtistsController {
   }
 
   @Put(':id')
-  update(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string, @Body(ValidationPipe) updateArtistDto: UpdateArtistDto) {
+  update(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body(ValidationPipe) updateArtistDto: UpdateArtistDto,
+  ) {
     return this.artistsService.update(id, updateArtistDto);
   }
 

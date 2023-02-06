@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Param, Delete, HttpCode, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  HttpCode,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 
 @Controller('favs')
@@ -39,11 +47,10 @@ export class FavoritesController {
   addTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.favoritesService.addTrack(id);
   }
-  
+
   @Delete('/track/:id')
   @HttpCode(204)
   removeTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.favoritesService.removeTrack(id);
   }
-  
 }

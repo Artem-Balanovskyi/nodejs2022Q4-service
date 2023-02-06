@@ -7,17 +7,15 @@ import { UserEntity } from '../users/entities/user.entity';
 
 @Injectable()
 export class InMemoryDB {
-
-    public users: UserEntity[] = [];
-    public tracks: TrackEntity[] = [];
-    public artists: ArtistEntity[] = [];
-    public albums: AlbumEntity[] = [];
-    public favorites: FavoritesEntity = {
-        artists: [],
-        albums: [],
-        tracks: [],
-    };
-
+  public users: UserEntity[] = [];
+  public tracks: TrackEntity[] = [];
+  public artists: ArtistEntity[] = [];
+  public albums: AlbumEntity[] = [];
+  public favorites: FavoritesEntity = {
+    artists: [],
+    albums: [],
+    tracks: [],
+  };
 }
 @Module({
   providers: [InMemoryDB],

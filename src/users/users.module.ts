@@ -6,6 +6,6 @@ import { DB_Module } from 'src/utils/in-memory.db';
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
-  imports: [DB_Module]
+  imports: [DB_Module],
 })
-export class UsersModule { }
+export class UsersModule {}

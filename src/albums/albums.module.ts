@@ -12,7 +12,7 @@ import { TracksModule } from 'src/tracks/tracks.module';
   imports: [
     DB_Module,
     forwardRef(() => TracksModule),
-    forwardRef(() => FavoritesModule)
-  ]
+    forwardRef(() => FavoritesModule),
+  ],
 })
-export class AlbumsModule { }
+export class AlbumsModule {}

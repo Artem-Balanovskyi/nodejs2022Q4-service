@@ -14,7 +14,7 @@ import { TracksModule } from 'src/tracks/tracks.module';
     DB_Module,
     forwardRef(() => TracksModule),
     forwardRef(() => ArtistsModule),
-    forwardRef(() => AlbumsModule)
-  ]
+    forwardRef(() => AlbumsModule),
+  ],
 })
-export class FavoritesModule { }
+export class FavoritesModule {}

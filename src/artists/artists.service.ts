@@ -12,7 +12,6 @@ import { TracksService } from 'src/tracks/tracks.service';
 
 @Injectable()
 export class ArtistsService {
-
   constructor(
     private db: InMemoryDB,
     @Inject(forwardRef(() => AlbumsService))
@@ -20,14 +19,14 @@ export class ArtistsService {
     @Inject(forwardRef(() => TracksService))
     private tracksService: TracksService,
     @Inject(forwardRef(() => FavoritesService))
-    private favoritesService: FavoritesService
-    ) {}
+    private favoritesService: FavoritesService,
+  ) {}
 
   create(dto: CreateArtistDto): ArtistEntity {
     const newArtist: ArtistEntity = {
       id: uuidv4(),
-      ...dto
-    }
+      ...dto,
+    };
     this.db.artists.push(newArtist);
     return newArtist;
   }
@@ -37,7 +36,9 @@ export class ArtistsService {
   }
 
   findOne(id: string): ArtistEntity {
-    const artist: ArtistEntity | null = this.db.artists.find(artist => artist.id === id);
+    const artist: ArtistEntity | null = this.db.artists.find(
+      (artist) => artist.id === id,
+    );
     if (!artist) throwException(ARTIST_NOT_FOUND, 404);
     else {
       return artist;
@@ -46,19 +47,17 @@ export class ArtistsService {
 
   update(id: string, dto: UpdateArtistDto): ArtistEntity {
     const artist: ArtistEntity | null = this.findOne(id);
-    const { name, grammy } = { ... dto};
+    const { name, grammy } = { ...dto };
     if (name !== undefined) artist.name = name;
-    if (grammy !== undefined) artist.grammy = grammy;  
+    if (grammy !== undefined) artist.grammy = grammy;
     return artist;
   }
 
-
-  remove(id: string):void {
+  remove(id: string): void {
     this.findOne(id);
-    this.db.artists = this.db.artists.filter(artist => artist.id !== id);
+    this.db.artists = this.db.artists.filter((artist) => artist.id !== id);
     this.favoritesService.removeArtist(id);
-      this.albumsService.deleteArtistId(id);
-      this.tracksService.deleteArtistId(id);
+    this.albumsService.deleteArtistId(id);
+    this.tracksService.deleteArtistId(id);
   }
-  
 }

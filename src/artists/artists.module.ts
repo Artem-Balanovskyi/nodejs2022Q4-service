@@ -6,7 +6,6 @@ import { FavoritesModule } from 'src/favorites/favorites.module';
 import { AlbumsModule } from 'src/albums/albums.module';
 import { TracksModule } from 'src/tracks/tracks.module';
 
-
 @Module({
   controllers: [ArtistsController],
   providers: [ArtistsService],
@@ -15,7 +14,7 @@ import { TracksModule } from 'src/tracks/tracks.module';
     DB_Module,
     forwardRef(() => FavoritesModule),
     forwardRef(() => AlbumsModule),
-    forwardRef(() => TracksModule)
-  ]
+    forwardRef(() => TracksModule),
+  ],
 })
-export class ArtistsModule { }
+export class ArtistsModule {}

@@ -8,9 +8,6 @@ import { FavoritesModule } from 'src/favorites/favorites.module';
   controllers: [TracksController],
   providers: [TracksService],
   exports: [TracksService],
-  imports: [
-    DB_Module,
-    forwardRef(() => FavoritesModule)
-  ]
+  imports: [DB_Module, forwardRef(() => FavoritesModule)],
 })
-export class TracksModule { }
+export class TracksModule {}

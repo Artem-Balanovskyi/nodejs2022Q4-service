@@ -10,6 +10,13 @@ import { DB_Module } from './utils/in-memory.db';
 @Module({
   controllers: [AppController],
   providers: [AppService],
-  imports: [UsersModule, ArtistsModule, TracksModule, FavoritesModule, AlbumsModule, DB_Module]
+  imports: [
+    UsersModule,
+    ArtistsModule,
+    TracksModule,
+    FavoritesModule,
+    AlbumsModule,
+    DB_Module,
+  ],
 })
 export class AppModule {}

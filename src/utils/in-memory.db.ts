@@ -27,7 +27,15 @@ export class InMemoryDB {
         }
 
     ];
-    public tracks: TrackEntity[] = [];
+    public tracks: TrackEntity[] = [
+        {
+            "id": "a218efeb-0e75-43e1-ab30-376176b58113",
+            "name": "First Track",
+            "artistId": "11a54795-c2bf-4e6d-bb68-9aa23c7e572a",
+            "albumId": "5a76c653-8128-41bb-acfe-dd9f7eae110d",
+            "duration": 5
+        }
+    ];
     public artists: ArtistEntity[] = [
         {
             "id": "11a54795-c2bf-4e6d-bb68-9aa23c7e572a",

@@ -26,21 +26,22 @@ export class ArtistsService {
 
   findOne(id: string): ArtistEntity {
     const artist: ArtistEntity | null = this.db.artists.find(artist => artist.id === id);
-    if (!artist) throwException(`User with id: ${id} was not found.`, 404);
+    if (!artist) throwException(`Artist with id: ${id} was not found.`, 404);
     else {
       return artist;
     }
   }
 
-  update(id: string, dto: UpdateArtistDto) {
-    const artist = this.findOne(id);
-    artist.name = dto.name;
-    artist.grammy = dto.grammy;    
+  update(id: string, dto: UpdateArtistDto): ArtistEntity {
+    const artist: ArtistEntity | null = this.findOne(id);
+    const { name, grammy } = { ... dto};
+    if (name !== undefined) artist.name = name;
+    if (grammy !== undefined) artist.grammy = grammy;  
     return artist;
   }
 
 
-  remove(id: string) {
+  remove(id: string):void {
     this.findOne(id);
     this.db.artists = this.db.artists.filter(artist => artist.id !== id);
   }

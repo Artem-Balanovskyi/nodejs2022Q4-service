@@ -1,31 +1,33 @@
 # Home Library Service
-
-## Prerequisites
-
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
-
-## Downloading
-
-```
-git clone {repository URL}
-```
-
-## Installing NPM modules
-
-```
-npm install
-```
-
+## Installation
+1. git clone {https://github.com/Artem-Balanovskyi/nodejs2022Q4-service.git}
+2. Switch to develop branch
+3. `npm install`
 ## Running application
 
 ```
-npm start
+npm run start
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+```
+npm run start:dev
+```
+
+```
+npm run start:prod
+```
+
+```
+npm run start:debug
+```
+
+## Port
+
+Default port: 4000
+
+## Swagger
+
+http://localhost:4000/doc/
 
 ## Testing
 
@@ -68,5 +70,3 @@ npm run format
 ### Debugging in VSCode
 
 Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging

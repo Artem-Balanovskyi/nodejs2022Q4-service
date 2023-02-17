@@ -1,6 +1,4 @@
 node_modules
-.git
-Dockerfile
 dist
-pgdata
-npm-debug.log
+Dockerfile
+.git

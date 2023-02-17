@@ -2,6 +2,7 @@ version: '3.8'
 services:
   api:
     container_name: Home-library
+    image: home-library-api
     build:
       dockerfile: Dockerfile
       context: .
@@ -15,11 +16,12 @@ services:
     volumes:
       - ./src:/app/src
       - logs:/app/logs
-      - exclude:/app/node_modules
+      - node_modules:/app/node_modules
     networks:
       - myNet
   database:
     container_name: postgreSQL
+    image: postgres-database
     build:
       dockerfile: ./database/Dockerfile
       context: .

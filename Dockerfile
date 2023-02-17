@@ -1,4 +1,4 @@
-FROM node:18-alpine as builder
+FROM node:18.13-alpine as builder
 
 WORKDIR /app/build
 
@@ -11,7 +11,7 @@ WORKDIR /app/build/dist
 
 COPY . .
 
-FROM node:18.0.0-alpine
+FROM node:18.13-alpine
 
 COPY --from=builder /app/build/dist /app
 COPY --from=builder /app/build/node_modules/ /app/node_modules

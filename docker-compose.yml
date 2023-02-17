@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  api:
+    container_name: Home-library
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    depends_on:
+      - database
+    volumes:
+      - ./src:/app/src
+      - logs:/app/logs
+      - exclude:/app/node_modules
+    networks:
+      - myNet
+  database:
+    container_name: postgreSQL
+    build:
+      dockerfile: ./database/Dockerfile
+      context: .
+    ports:
+      - ${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - myNet
+networks:
+  myNet:
+    name: myNet
+    driver: bridge
+volumes:
+  node_modules:
+  logs:
+  postgres_data:

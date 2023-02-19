@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { v4 as uuidv4 } from 'uuid';
 import { throwException } from 'src/utils/throwException';
 import { UserEntity } from './entities/user.entity';
 import { PASSWORD_NOT_CORRECT, USER_NOT_FOUND } from 'src/utils/messages';
@@ -16,12 +15,7 @@ export class UsersService {
   ) { }
 
   async create(dto: CreateUserDto): Promise<UserEntity> {
-    const createdUser: UserEntity = this.userRepository.create({
-      id: uuidv4(),
-      ...dto,
-      version: 1
-    });
-
+    const createdUser: UserEntity = this.userRepository.create({ ...dto });
     return await this.userRepository.save(createdUser);
   }
 
@@ -35,10 +29,8 @@ export class UsersService {
     throwException(USER_NOT_FOUND, 404);
   }
 
-  async update(userId: string, dto: UpdatePasswordDto) {
-    const updatedUser = await this.userRepository.findOne({
-      where: { id: userId },
-    });
+  async update(userId: string, dto: UpdatePasswordDto): Promise<UserEntity> {
+    const updatedUser: UserEntity = await this.userRepository.findOne({ where: { id: userId } });
     if (!updatedUser) throwException(USER_NOT_FOUND, 404);
     if (updatedUser.password !== dto.oldPassword) {
       throwException(PASSWORD_NOT_CORRECT, 403);
@@ -46,11 +38,10 @@ export class UsersService {
       updatedUser.version += 1;
       updatedUser.password = dto.newPassword;
       return await this.userRepository.save(updatedUser);
-     
     }
   }
 
-  async remove(userId: string) {
+  async remove(userId: string): Promise<void> {
     const result = await this.userRepository.delete(userId);
 
     if (result.affected === 0) {

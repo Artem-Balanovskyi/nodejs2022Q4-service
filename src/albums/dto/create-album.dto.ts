@@ -1,7 +1,7 @@
 import {
   IsNotEmpty,
   IsString,
-  IsNumber,
+  IsInt,
   Min,
   Max,
   IsOptional,
@@ -12,12 +12,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAlbumDto {
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'The albums`s name can not be empty.' })
+  @IsString({ message: 'The albums`s name should be a string.' })
   name: string;
 
   @ApiProperty()
-  @IsNumber()
+  @IsInt({ message: 'The albums`s year should be a number.' })
   @Min(0)
   @Max(new Date().getFullYear())
   year: number;

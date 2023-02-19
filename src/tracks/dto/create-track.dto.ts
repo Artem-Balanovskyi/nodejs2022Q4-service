@@ -11,8 +11,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTrackDto {
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'The track`s name can not be empty.' })
+  @IsString({ message: 'The track`s name should be a string.' })
   name: string;
 
   @ApiProperty()
@@ -28,7 +28,8 @@ export class CreateTrackDto {
   albumId: string | null; // refers to Album
 
   @ApiProperty()
-  @IsInt()
+  @IsNotEmpty({ message: 'The track`s duration time can not be empty.' })
+  @IsInt({ message: 'The track`s duration time should be an integer number.' })
   @Min(0)
   duration: number; // integer number
 }

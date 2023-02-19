@@ -7,16 +7,7 @@ import { UserEntity } from '../users/entities/user.entity';
 
 @Injectable()
 export class InMemoryDB {
-  public users: UserEntity[] = [
-    {
-      id: '54c8ca76-89c9-4bef-8dd2-0af8e59f9be3',
-      login: 'Artem',
-      password: 'password',
-      version: 1,
-      createdAt: 1232,
-      updatedAt: 12323,
-    },
-  ];
+  public users: UserEntity[] = [];
   public tracks: TrackEntity[] = [];
   public artists: ArtistEntity[] = [];
   public albums: AlbumEntity[] = [];

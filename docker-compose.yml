@@ -2,7 +2,7 @@ version: '3.8'
 services:
   api:
     container_name: Home-library
-    image: home-library-api
+    image: balanovskyi/home-library-api
     build: 
       dockerfile: Dockerfile
       context: .
@@ -22,7 +22,7 @@ services:
     command: npm run start:dev
   database:
     container_name: postgreSQL
-    image: postgres-database
+    image: balanovskyi/postgres-database
     build: 
       dockerfile: ./database/Dockerfile
       context: .
@@ -37,6 +37,11 @@ services:
       - ${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}
     networks:
      - homeLibNet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
     command: postgres -c logging_collector=on -c log_statement=all
 volumes:
   node_modules:

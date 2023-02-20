@@ -1,4 +1,5 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { init1676931828495 } from 'database/migrations/1676931828495-init';
 import 'dotenv/config';
 
 export const ormConfig: DataSourceOptions = {
@@ -8,9 +9,8 @@ export const ormConfig: DataSourceOptions = {
   database: process.env.POSTGRES_DATABASE,
   port: +process.env.POSTGRES_CONTAINER_PORT,
   host: process.env.POSTGRES_HOST,
-  logging: true,
-  synchronize: true,
   entities: ['dist/**/*.entity.js'],
+  migrations: [init1676931828495],
 };
 
 const dataSource = new DataSource(ormConfig);

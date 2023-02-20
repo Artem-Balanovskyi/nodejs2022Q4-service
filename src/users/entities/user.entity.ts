@@ -24,11 +24,11 @@ export class UserEntity {
   version: number;
 
   @CreateDateColumn({ type: 'timestamp' })
-  @Transform(({ value }) => new Date(value).getTime())
+  @Transform(({ value }) =>  value.getTime())
   createdAt: number;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  @Transform(({ value }) => new Date(value).getTime())
+  @Transform(({ value }) =>  value.getTime())
   updatedAt: number;
 
 }

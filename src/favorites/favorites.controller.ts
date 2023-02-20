@@ -9,48 +9,33 @@ import {
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 
+const requests = {
+  track: 'tracks',
+  album: 'albums',
+  artist: 'artists',
+};
+
 @Controller('favs')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
-  findAll() {
-    return this.favoritesService.findAll();
+  async findAll() {
+    return await this.favoritesService.findAll();
   }
 
-  @Post('/album/:id')
+  @Post('/:entity/:id')
   @HttpCode(201)
-  addAlbum(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.favoritesService.addAlbum(id);
+  async addEntityById(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('entity') entity: 'artist' | 'track' | 'album',
+  ): Promise<void> {
+    await this.favoritesService.addEntityById(id, requests[entity]);
   }
 
-  @Delete('/album/:id')
+  @Delete('/:entity/:id')
   @HttpCode(204)
-  removeAlbum(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.favoritesService.removeAlbum(id);
-  }
-
-  @Post('/artist/:id')
-  @HttpCode(201)
-  addArtist(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.favoritesService.addArtist(id);
-  }
-
-  @Delete('/artist/:id')
-  @HttpCode(204)
-  removeArtist(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.favoritesService.removeArtist(id);
-  }
-
-  @Post('/track/:id')
-  @HttpCode(201)
-  addTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.favoritesService.addTrack(id);
-  }
-
-  @Delete('/track/:id')
-  @HttpCode(204)
-  removeTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.favoritesService.removeTrack(id);
+  async deleteEntityById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string): Promise<void> {
+    await this.favoritesService.deleteEntityById(id);
   }
 }

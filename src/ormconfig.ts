@@ -14,8 +14,8 @@ const ormConfig: DataSourceOptions = {
   host: process.env.POSTGRES_HOST,
   entities: ['dist/**/*.entity.js'],
   migrationsTableName: 'migrations',
-  synchronize: true,
   parseInt8: true,
+  migrationsRun: true,
   logging: true,
   migrations: ['dist/database/migrations/*{.ts,.js}'],
 };

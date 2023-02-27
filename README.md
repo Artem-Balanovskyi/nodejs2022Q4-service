@@ -32,12 +32,7 @@ After application running open new terminal and enter:
 
 To run all tests
 ```
-npm run test
-```
-
-To run only one of all test suites
-```
-npm run test -- <path to suite>
+npm run docker:test
 ```
 
 ## Scan for security vulnerabilities
@@ -46,6 +41,17 @@ npm run test -- <path to suite>
 npm run docker:scan
 ```
 
+## Run migrations while docker containers are running:
+
+```
+npm run migration:up
+```
+
+## Revert 1 migration while docker containers are running:
+
+```
+npm run migration:down
+```
 ## Check lint and format
 
 Without fixing
@@ -62,13 +68,3 @@ Format
 ```
 npm run format
 ```
-
-## Testing etc without `npm install` from Docker container
-
-Do to this just run command like
-```
-docker exec <app> npm run test
-```
-Where app is ID or Name of container. You can see them after running `docker container ls`. Name of api service of this app possibly will be `nodejs2022q4-service-api-1`, so the command will look like `docker exec nodejs2022q4-service-api-1 npm test` or by example id `docker exec aa9b827ebd96 npm test`.
-
-Most of other npm commands can be run this way too.

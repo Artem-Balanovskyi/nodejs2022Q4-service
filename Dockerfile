@@ -5,6 +5,7 @@ WORKDIR /app/build
 COPY package*.json .
 
 RUN npm install --legacy-peer-deps 
+RUN npm install swagger-ui-express
 
 WORKDIR /app/build/dist
 

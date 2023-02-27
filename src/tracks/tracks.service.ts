@@ -12,7 +12,7 @@ export class TracksService {
   constructor(
     @InjectRepository(TrackEntity)
     private trackRepository: Repository<TrackEntity>,
-  ) { }
+  ) {}
 
   async create(dto: CreateTrackDto): Promise<TrackEntity> {
     const createdTrack: TrackEntity = this.trackRepository.create({ ...dto });
@@ -24,15 +24,19 @@ export class TracksService {
   }
 
   async findOne(trackId: string): Promise<TrackEntity> {
-    const track = await this.trackRepository.findOne({ where: { id: trackId } });
+    const track = await this.trackRepository.findOne({
+      where: { id: trackId },
+    });
     if (track) return track;
     throwException(TRACK_NOT_FOUND, 404);
   }
 
   async update(trackId: string, dto: UpdateTrackDto): Promise<TrackEntity> {
-    const updatedTrack: TrackEntity = await this.trackRepository.findOne({ where: { id: trackId } });
+    const updatedTrack: TrackEntity = await this.trackRepository.findOne({
+      where: { id: trackId },
+    });
     if (!updatedTrack) throwException(TRACK_NOT_FOUND, 404);
-    Object.assign(updatedTrack, dto)
+    Object.assign(updatedTrack, dto);
     return await this.trackRepository.save(updatedTrack);
   }
 

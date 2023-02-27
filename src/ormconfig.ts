@@ -1,8 +1,11 @@
+import { registerAs } from '@nestjs/config';
+import * as dotenv from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { init1676931828495 } from 'database/migrations/1676931828495-init';
-import 'dotenv/config';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
-export const ormConfig: DataSourceOptions = {
+dotenv.config();
+
+const ormConfig: DataSourceOptions = {
   type: 'postgres',
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
@@ -10,9 +13,16 @@ export const ormConfig: DataSourceOptions = {
   port: +process.env.POSTGRES_CONTAINER_PORT,
   host: process.env.POSTGRES_HOST,
   entities: ['dist/**/*.entity.js'],
-  migrations: [init1676931828495],
+  migrationsTableName: 'migrations',
+  synchronize: true,
+  parseInt8: true,
+  logging: true,
+  migrations: ['dist/database/migrations/*{.ts,.js}'],
 };
 
-const dataSource = new DataSource(ormConfig);
+export default new DataSource(ormConfig);
 
-export default dataSource;
+export const database = registerAs(
+  'database',
+  (): PostgresConnectionOptions => ormConfig,
+);

@@ -1,86 +1,55 @@
 import { Injectable } from '@nestjs/common';
-import { InMemoryDB } from 'src/utils/in-memory.db';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { throwException } from 'src/utils/throwException';
 import { AlbumEntity } from 'src/albums/entities/album.entity';
 import { ArtistEntity } from 'src/artists/entities/artist.entity';
 import { TrackEntity } from 'src/tracks/entities/track.entity';
-import {
-  ALBUM_ADDED,
-  ALBUM_NOT_FOUND,
-  ARTIST_ADDED,
-  ARTIST_NOT_FOUND,
-  TRACK_ADDED,
-  TRACK_NOT_FOUND,
-} from 'src/utils/messages';
+import { ENTITY_NOT_FOUND, ENTITY_ADDED } from 'src/utils/messages';
+import { FavoritesEntity } from './entities/favorite.entity';
 
+const repositories = {
+  tracks: 'tracksRepository',
+  albums: 'albumsRepository',
+  artists: 'artistsRepository',
+};
 @Injectable()
 export class FavoritesService {
-  constructor(private db: InMemoryDB) {}
+  constructor(
+    @InjectRepository(FavoritesEntity)
+    private readonly favoritesRepository: Repository<FavoritesEntity>,
+    @InjectRepository(TrackEntity)
+    private readonly tracksRepository: Repository<TrackEntity>,
+    @InjectRepository(AlbumEntity)
+    private readonly albumsRepository: Repository<AlbumEntity>,
+    @InjectRepository(ArtistEntity)
+    private readonly artistsRepository: Repository<ArtistEntity>,
+  ) {}
 
-  findAll() {
-    const albums: AlbumEntity[] = this.db.albums.filter((album) =>
-      this.db.favorites.albums.includes(album.id),
-    );
-    const artists: ArtistEntity[] = this.db.artists.filter((artist) =>
-      this.db.favorites.artists.includes(artist.id),
-    );
-    const tracks: TrackEntity[] = this.db.tracks.filter((track) =>
-      this.db.favorites.tracks.includes(track.id),
-    );
-    return {
-      albums,
-      tracks,
-      artists,
-    };
+  async findAll() {
+    const ids = { artists: [], albums: [], tracks: [] };
+    const allFavorites = await this.favoritesRepository.find();
+    allFavorites.forEach((obj) => {
+      if (obj.entity === 'artists') return ids.artists.push(obj.entityId);
+      if (obj.entity === 'albums') return ids.albums.push(obj.entityId);
+      if (obj.entity === 'tracks') return ids.tracks.push(obj.entityId);
+    });
+    const result = { artists: [], albums: [], tracks: [] };
+    for (const field in repositories) {
+      result[field] = await this[repositories[field]].findByIds(ids[field]);
+    }
+    return result;
   }
 
-  addAlbum(id: string) {
-    const album = this.db.albums.find((album) => album.id === id);
-    if (album) {
-      this.db.favorites.albums.push(album.id);
-      return { message: ALBUM_ADDED };
-    }
-    throwException(ALBUM_NOT_FOUND, 422);
+  async addEntityById(entityId: string, entityName: string): Promise<void> {
+    const allEntities = await this[repositories[entityName]].find();
+    const entity = allEntities.find(({ id }) => id === entityId);
+    if (!entity) throwException(ENTITY_NOT_FOUND(entityName), 422);
+    await this.favoritesRepository.save({ entityId, entity: entityName });
+    throwException(ENTITY_ADDED(entityName), 201);
   }
 
-  removeAlbum(id: string) {
-    const index = this.db.favorites.albums.findIndex((album) => album === id);
-    if (index >= 0) {
-      this.db.favorites.albums.splice(index, 1);
-    }
-  }
-
-  addArtist(id: string) {
-    const artist = this.db.artists.find((artist) => artist.id === id);
-    if (artist) {
-      this.db.favorites.artists.push(artist.id);
-      return { message: ARTIST_ADDED };
-    }
-    throwException(ARTIST_NOT_FOUND, 422);
-  }
-
-  removeArtist(id: string) {
-    const index = this.db.favorites.artists.findIndex(
-      (artist) => artist === id,
-    );
-    if (index >= 0) {
-      this.db.favorites.artists.splice(index, 1);
-    }
-  }
-
-  addTrack(id: string) {
-    const track = this.db.tracks.find((track) => track.id === id);
-    if (track) {
-      this.db.favorites.tracks.push(track.id);
-      return { message: TRACK_ADDED };
-    }
-    throwException(TRACK_NOT_FOUND, 422);
-  }
-
-  removeTrack(id: string) {
-    const index = this.db.favorites.tracks.findIndex((track) => track === id);
-    if (index >= 0) {
-      this.db.favorites.tracks.splice(index, 1);
-    }
+  async deleteEntityById(entityId: string) {
+    await this.favoritesRepository.delete({ id: entityId });
   }
 }

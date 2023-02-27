@@ -1,8 +1,34 @@
+import { Exclude, Transform } from 'class-transformer';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  VersionColumn,
+} from 'typeorm';
+
+@Entity('User')
 export class UserEntity {
-  id: string; // uuid v4
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'varchar', length: '255' })
   login: string;
+
+  @Exclude()
+  @Column({ type: 'varchar', length: '255' })
   password: string;
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
+
+  @VersionColumn({ type: 'integer', default: 1 })
+  version: number;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  @Transform(({ value }) =>  value.getTime())
+  createdAt: number;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  @Transform(({ value }) =>  value.getTime())
+  updatedAt: number;
+
 }

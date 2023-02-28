@@ -13,7 +13,7 @@ const ormConfig: DataSourceOptions = {
   port: +process.env.POSTGRES_CONTAINER_PORT,
   host: process.env.POSTGRES_HOST,
   entities: ['dist/**/*.entity.js'],
-  migrationsTableName: 'migrations',
+  synchronize: false,
   parseInt8: true,
   migrationsRun: true,
   logging: true,

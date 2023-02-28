@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -10,6 +10,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { database } from './ormconfig';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { LoggerModule } from './logger/logger.module';
+import { APP_FILTER } from '@nestjs/core';
+import { CustomExceptionFilter } from './logger/custom-exception.filter';
+import { LoggerMiddleware } from './logger/logger.middleware';
 
 const typeOrmConfig = {
   imports: [ConfigModule.forRoot({ load: [database] })],
@@ -21,7 +25,13 @@ const typeOrmConfig = {
 };
 @Module({
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: CustomExceptionFilter,
+    },
+  ],
   imports: [
     TypeOrmModule.forRootAsync(typeOrmConfig),
     UsersModule,
@@ -29,6 +39,11 @@ const typeOrmConfig = {
     TracksModule,
     FavoritesModule,
     AlbumsModule,
+    LoggerModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

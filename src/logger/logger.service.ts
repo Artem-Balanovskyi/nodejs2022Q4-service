@@ -14,36 +14,34 @@ export class LoggerService extends ConsoleLogger {
 
   log = async (message: any, context?: string) => {
     super.log(message, context);
-    await saveLog('log', message, this.fileSize);
+    const infoMessage = getLogMsg(message, context, 'LOG');
+    await saveLog('LOG', infoMessage, this.fileSize);
   };
 
-  error = async (error: any, stack?: string, context?: string) => {
+  error = async (error: any, context?: string) => {
     if (this.logLevel < 1) return;
-    super.error(error, stack, context);
-    if (error instanceof Error) {
-      const { message, name } = error;
-      const errorMessage = `${name}: ${message}\n ${context}`;
-      await saveLog('error', errorMessage, this.fileSize);
-    } else {
-      const errorMessage = `${stack}: ${error}`;
-      await saveLog('error', errorMessage, this.fileSize);
-    }
+    super.error(error, context);
+    const infoMessage = getLogMsg(error, context, 'ERROR');
+    await saveLog('ERROR', infoMessage, this.fileSize);
   };
 
   warn = async (message: any, context?: string) => {
     if (this.logLevel < 2) return;
     super.warn(message, context);
-    await saveLog('warn', message, this.fileSize);
+    const infoMessage = getLogMsg(message, context, 'WARN');
+    await saveLog('WARN', infoMessage, this.fileSize);
   };
 
   debug(message: any, context?: string) {
     if (this.logLevel < 3) return;
-    super.debug(message, context);
+    const infoMessage = getLogMsg(message, context, 'DEBUG');
+    super.debug(infoMessage, context);
   }
 
   verbose(message: any, context?: string) {
     if (this.logLevel < 4) return;
-    super.verbose(message, context);
+    const infoMessage = getLogMsg(message, context, 'VERBOSE');
+    super.verbose(infoMessage, context);
   }
 }
 
@@ -70,10 +68,7 @@ async function saveLog(name: string, message: string, fileSize: number) {
     await createFile(dirname, filename);
   }
 
-  await appendFile(
-    path.resolve(dirname, filename),
-    `${new Date().toLocaleString()} - ${message}\n`,
-  );
+  await appendFile(path.resolve(dirname, filename), `${message}`);
 }
 
 function generateFileName(name: string, order: number) {
@@ -88,4 +83,21 @@ function createFile(dirname: string, filename: string) {
     ws.close();
     return resolve;
   });
+}
+
+function getLogMsg(message: string, optionalParams: string, level: string) {
+  const currentDate = new Date();
+  const dateTime =
+    currentDate.getDate() +
+    '/' +
+    (currentDate.getMonth() + 1) +
+    '/' +
+    currentDate.getFullYear() +
+    ' @ ' +
+    currentDate.getHours() +
+    ':' +
+    currentDate.getMinutes() +
+    ':' +
+    currentDate.getSeconds();
+  return `${dateTime} ${level} [${optionalParams}] :  ${message}\n`;
 }

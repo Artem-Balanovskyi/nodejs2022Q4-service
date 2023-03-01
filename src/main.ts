@@ -5,6 +5,7 @@ import * as yaml from 'js-yaml';
 import { readFile } from 'fs/promises';
 import * as dotenv from 'dotenv';
 import { LoggerService } from './logger/logger.service';
+import { Logger } from '@nestjs/common';
 
 dotenv.config();
 
@@ -12,18 +13,21 @@ const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    bufferLogs: true,
-    // logger: new LoggerService(),
-    // logger: new LoggerService(),
+    logger: new LoggerService(),
   });
-
-  // app.useLogger(app.get(LoggerService));
-  app.useLogger(new LoggerService());
 
   const document: any = yaml.load(
     await readFile('./doc/api.yaml', { encoding: 'utf-8' }),
   );
   SwaggerModule.setup('doc', app, document);
+
+  const logger = new Logger('Exceptions');
+  process.on('uncaughtException', async (error) => {
+    logger.error(error);
+  });
+  process.on('unhandledRejection', async (reason) => {
+    logger.error(reason);
+  });
 
   await app.listen(PORT);
 }

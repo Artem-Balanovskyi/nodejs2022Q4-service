@@ -44,13 +44,13 @@ npm run docker:scan
 ## Run migrations while docker containers are running:
 
 ```
-npm run migration:up
+npm run migration:run
 ```
 
 ## Revert 1 migration while docker containers are running:
 
 ```
-npm run migration:down
+npm run migration:revert
 ```
 ## Check lint and format
 

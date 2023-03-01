@@ -26,8 +26,8 @@
     "docker:test": "docker exec Home-library npm run test ",
     "typeorm": "typeorm-ts-node-esm",
     "migration:create": "npm run typeorm -- migration:create",
-    "migration:up": "docker exec Home-library npm run typeorm migration:run -- -d ./src/ormconfig.ts",
-    "migration:down": "docker exec Home-library npm run typeorm migration:revert -- -d ./src/ormconfig.ts"
+    "migration:up": "npm run typeorm migration:run -- -d ./src/ormconfig.ts",
+    "migration:down": "npm run typeorm migration:revert -- -d ./src/ormconfig.ts"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

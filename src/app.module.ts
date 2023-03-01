@@ -14,6 +14,7 @@ import { LoggerModule } from './logger/logger.module';
 import { APP_FILTER } from '@nestjs/core';
 import { CustomExceptionFilter } from './logger/custom-exception.filter';
 import { LoggerMiddleware } from './logger/logger.middleware';
+import { AuthModule } from './auth/auth.module';
 
 const typeOrmConfig = {
   imports: [ConfigModule.forRoot({ load: [database] })],
@@ -40,6 +41,7 @@ const typeOrmConfig = {
     FavoritesModule,
     AlbumsModule,
     LoggerModule,
+    AuthModule,
   ],
 })
 export class AppModule implements NestModule {

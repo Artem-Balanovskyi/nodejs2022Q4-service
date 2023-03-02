@@ -24,11 +24,14 @@ export class UserEntity {
   version: number;
 
   @CreateDateColumn({ type: 'timestamp' })
-  @Transform(({ value }) =>  value.getTime())
+  @Transform(({ value }) => value.getTime())
   createdAt: number;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  @Transform(({ value }) =>  value.getTime())
+  @Transform(({ value }) => value.getTime())
   updatedAt: number;
 
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial);
+  }
 }

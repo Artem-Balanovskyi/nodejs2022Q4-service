@@ -12,7 +12,7 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
 
   async create(dto: CreateUserDto): Promise<UserEntity> {
     const createdUser: UserEntity = this.userRepository.create({ ...dto });
@@ -30,7 +30,9 @@ export class UsersService {
   }
 
   async update(userId: string, dto: UpdatePasswordDto): Promise<UserEntity> {
-    const updatedUser: UserEntity = await this.userRepository.findOne({ where: { id: userId } });
+    const updatedUser: UserEntity = await this.userRepository.findOne({
+      where: { id: userId },
+    });
     if (!updatedUser) throwException(USER_NOT_FOUND, 404);
     if (updatedUser.password !== dto.oldPassword) {
       throwException(PASSWORD_NOT_CORRECT, 403);

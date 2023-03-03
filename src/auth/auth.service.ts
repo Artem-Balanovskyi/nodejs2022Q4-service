@@ -12,6 +12,12 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
+import {
+  NO_REFRESH_TOKEN,
+  PASSWORD_NOT_CORRECT,
+  REF_TOKEN_INVALID,
+  USER_NOT_FOUND,
+} from 'src/utils/messages';
 
 @Injectable()
 export class AuthService {
@@ -26,18 +32,16 @@ export class AuthService {
   login = async ({ login, password }: LoginDto) => {
     const user = await this.userRepository.findOne({ where: { login } });
 
-    if (!user) throw new ForbiddenException('User is not found');
+    if (!user) throw new ForbiddenException(USER_NOT_FOUND);
     const isPasswordValid = await compare(password, user.password);
-    if (!isPasswordValid)
-      throw new ForbiddenException('Password is not correct');
+    if (!isPasswordValid) throw new ForbiddenException(PASSWORD_NOT_CORRECT);
 
     return this.generateTokens(user.id, user.login);
   };
 
   refresh = async (body: { refreshToken: string }) => {
     const { refreshToken } = body;
-    if (!refreshToken)
-      throw new UnauthorizedException('No refresh token in body');
+    if (!refreshToken) throw new UnauthorizedException(NO_REFRESH_TOKEN);
 
     try {
       const { userId, login } = verify(
@@ -46,7 +50,7 @@ export class AuthService {
       ) as JwtPayload;
       return this.generateTokens(userId, login);
     } catch {
-      throw new ForbiddenException('Refresh token is outdated or invalid');
+      throw new ForbiddenException(REF_TOKEN_INVALID);
     }
   };
 

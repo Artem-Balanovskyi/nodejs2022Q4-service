@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { throwException } from 'src/utils/throwException';
 import { TrackEntity } from './entities/track.entity';
 import { TRACK_NOT_FOUND } from 'src/utils/messages';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,14 +27,14 @@ export class TracksService {
       where: { id: trackId },
     });
     if (track) return track;
-    throwException(TRACK_NOT_FOUND, 404);
+    throw new NotFoundException(TRACK_NOT_FOUND);
   }
 
   async update(trackId: string, dto: UpdateTrackDto): Promise<TrackEntity> {
     const updatedTrack: TrackEntity = await this.trackRepository.findOne({
       where: { id: trackId },
     });
-    if (!updatedTrack) throwException(TRACK_NOT_FOUND, 404);
+    if (!updatedTrack) throw new NotFoundException(TRACK_NOT_FOUND);
     Object.assign(updatedTrack, dto);
     return await this.trackRepository.save(updatedTrack);
   }
@@ -44,7 +43,7 @@ export class TracksService {
     const result = await this.trackRepository.delete(trackId);
 
     if (result.affected === 0) {
-      throwException(TRACK_NOT_FOUND, 404);
+      throw new NotFoundException(TRACK_NOT_FOUND);
     }
   }
 }

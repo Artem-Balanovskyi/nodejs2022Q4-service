@@ -7,6 +7,7 @@ import { PASSWORD_NOT_CORRECT, USER_NOT_FOUND } from 'src/utils/messages';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
+import 'dotenv/config';
 
 @Injectable()
 export class UsersService {

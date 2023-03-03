@@ -15,8 +15,8 @@ const ormConfig: DataSourceOptions = {
   entities: ['dist/**/*.entity.js'],
   synchronize: false,
   parseInt8: true,
-  // migrationsRun: true,
-  logging: false,
+  migrationsRun: true,
+  logging: true,
   migrations: ['dist/database/migrations/*{.ts,.js}'],
 };
 

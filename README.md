@@ -9,8 +9,8 @@
 ## Installation
 
 - Clone/download repo {https://github.com/Artem-Balanovskyi/nodejs2022Q4-service.git}
-- Switch to `PostgreSQL/Docker` branch
-- `npm install` - actually you need this only for service commands like `lint`, `test` etc. on your host machine
+- Switch to `Logging/Authentication` branch
+- `npm install`
 - Copy '.env.example` to `.env' and edit settings if you want
 
 ## Running application
@@ -19,7 +19,10 @@ Build images and run them in containers
 ```
 npm run docker:compose
 ```
-
+To delete all Docker containers and images
+```
+npm run docker:clean
+```
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
@@ -30,9 +33,8 @@ Next time you can use `docker-compose up` to run already build images.
 
 After application running open new terminal and enter:
 
-To run all tests
 ```
-npm run docker:test
+npm run test:auth
 ```
 
 ## Scan for security vulnerabilities

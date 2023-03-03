@@ -13,7 +13,7 @@ services:
       - PORT=${PORT}
     volumes:
         - ./src:/app/src
-        - logs:/app/logs
+        - ./logs:/app/logs
         - node_modules:/app/node_modules
     ports:
       - ${PORT}:${PORT}
@@ -33,6 +33,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DATABASE}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/log/postgresql
     ports:
       - ${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}
     networks:
@@ -45,7 +46,7 @@ services:
     command: postgres -c logging_collector=on -c log_statement=all
 volumes:
   node_modules:
-  logs:
+  postgres_logs:
   postgres_data:
 networks:
    homeLibNet:

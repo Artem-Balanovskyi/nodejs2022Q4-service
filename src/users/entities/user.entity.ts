@@ -1,5 +1,7 @@
 import { Exclude, Transform } from 'class-transformer';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -7,8 +9,10 @@ import {
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
+import 'dotenv/config';
+import { hash } from 'bcrypt';
 
-@Entity('User')
+@Entity('users')
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -20,15 +24,25 @@ export class UserEntity {
   @Column({ type: 'varchar', length: '255' })
   password: string;
 
+  @BeforeInsert()
+  @BeforeUpdate()
+  async passwordHash() {
+    const saltOrRounds = parseInt(process.env.CRYPT_SALT);
+    this.password = await hash(this.password, saltOrRounds);
+  }
+
   @VersionColumn({ type: 'integer', default: 1 })
   version: number;
 
   @CreateDateColumn({ type: 'timestamp' })
-  @Transform(({ value }) =>  value.getTime())
+  @Transform(({ value }) => value.getTime())
   createdAt: number;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  @Transform(({ value }) =>  value.getTime())
+  @Transform(({ value }) => value.getTime())
   updatedAt: number;
 
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial);
+  }
 }

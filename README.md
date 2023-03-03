@@ -9,8 +9,8 @@
 ## Installation
 
 - Clone/download repo {https://github.com/Artem-Balanovskyi/nodejs2022Q4-service.git}
-- Switch to `PostgreSQL/Docker` branch
-- `npm install` - actually you need this only for service commands like `lint`, `test` etc. on your host machine
+- Switch to `Logging/Authentication` branch
+- `npm install`
 - Copy '.env.example` to `.env' and edit settings if you want
 
 ## Running application
@@ -19,7 +19,10 @@ Build images and run them in containers
 ```
 npm run docker:compose
 ```
-
+To delete all Docker containers and images
+```
+npm run docker:clean
+```
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
@@ -30,14 +33,8 @@ Next time you can use `docker-compose up` to run already build images.
 
 After application running open new terminal and enter:
 
-To run all tests
 ```
-npm run test
-```
-
-To run only one of all test suites
-```
-npm run test -- <path to suite>
+npm run test:auth
 ```
 
 ## Scan for security vulnerabilities
@@ -46,6 +43,17 @@ npm run test -- <path to suite>
 npm run docker:scan
 ```
 
+## Run migrations while docker containers are running:
+
+```
+npm run migration:run
+```
+
+## Revert 1 migration while docker containers are running:
+
+```
+npm run migration:revert
+```
 ## Check lint and format
 
 Without fixing
@@ -62,13 +70,3 @@ Format
 ```
 npm run format
 ```
-
-## Testing etc without `npm install` from Docker container
-
-Do to this just run command like
-```
-docker exec <app> npm run test
-```
-Where app is ID or Name of container. You can see them after running `docker container ls`. Name of api service of this app possibly will be `nodejs2022q4-service-api-1`, so the command will look like `docker exec nodejs2022q4-service-api-1 npm test` or by example id `docker exec aa9b827ebd96 npm test`.
-
-Most of other npm commands can be run this way too.

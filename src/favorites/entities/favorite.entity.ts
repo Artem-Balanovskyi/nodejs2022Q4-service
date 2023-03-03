@@ -1,4 +1,3 @@
-import { Exclude } from 'class-transformer';
 import { AlbumEntity } from 'src/albums/entities/album.entity';
 import { ArtistEntity } from 'src/artists/entities/artist.entity';
 import { TrackEntity } from 'src/tracks/entities/track.entity';
@@ -8,35 +7,32 @@ import {
   ManyToMany,
   Column,
   JoinTable,
+  BaseEntity,
 } from 'typeorm';
 
-@Entity('Favorite')
-export class FavoritesEntity {
+@Entity('favorites')
+export class FavoritesEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  @Exclude()
   id: string;
 
-  @Column()
-  entity: string;
+  @Column('text', { array: true, default: [] })
+  albumsIds: string[];
 
-  @Column()
-  entityId: string;
+  @Column('text', { array: true, default: [] })
+  artistsId: string[];
 
-  @ManyToMany(() => ArtistEntity, {
-    onDelete: 'CASCADE',
-  })
-  @JoinTable()
-  artists: ArtistEntity[];
+  @Column('text', { array: true, default: [] })
+  tracksIds: string[];
 
-  @ManyToMany(() => AlbumEntity, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToMany(() => AlbumEntity, (album) => album.favoriteAlbums)
   @JoinTable()
   albums: AlbumEntity[];
 
-  @ManyToMany(() => TrackEntity, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToMany(() => ArtistEntity, (artist) => artist.favoriteArtists)
+  @JoinTable()
+  artists: ArtistEntity[];
+
+  @ManyToMany(() => TrackEntity, (track) => track.favoriteTracks)
   @JoinTable()
   tracks: TrackEntity[];
 }

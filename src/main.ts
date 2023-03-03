@@ -5,7 +5,11 @@ import * as yaml from 'js-yaml';
 import { readFile } from 'fs/promises';
 import * as dotenv from 'dotenv';
 import { LoggerService } from './logger/logger.service';
-import { ClassSerializerInterceptor, Logger } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Logger,
+  ValidationPipe,
+} from '@nestjs/common';
 
 dotenv.config();
 
@@ -16,6 +20,7 @@ async function bootstrap() {
     logger: new LoggerService(),
   });
 
+  app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const document: any = yaml.load(

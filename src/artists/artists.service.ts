@@ -15,7 +15,9 @@ export class ArtistsService {
   ) {}
 
   async create(dto: CreateArtistDto): Promise<ArtistEntity> {
-    const createdArtist: ArtistEntity = this.artistRepository.create({ ...dto });
+    const createdArtist: ArtistEntity = this.artistRepository.create({
+      ...dto,
+    });
     return await this.artistRepository.save(createdArtist);
   }
 
@@ -24,15 +26,19 @@ export class ArtistsService {
   }
 
   async findOne(artistId: string): Promise<ArtistEntity> {
-    const artist = await this.artistRepository.findOne({ where: { id: artistId } });
+    const artist = await this.artistRepository.findOne({
+      where: { id: artistId },
+    });
     if (artist) return artist;
     throwException(ARTIST_NOT_FOUND, 404);
   }
 
   async update(artistId: string, dto: UpdateArtistDto): Promise<ArtistEntity> {
-    const updatedArtist: ArtistEntity = await this.artistRepository.findOne({ where: { id: artistId } });
+    const updatedArtist: ArtistEntity = await this.artistRepository.findOne({
+      where: { id: artistId },
+    });
     if (!updatedArtist) throwException(ARTIST_NOT_FOUND, 404);
-    Object.assign(updatedArtist, dto)
+    Object.assign(updatedArtist, dto);
     return await this.artistRepository.save(updatedArtist);
   }
 

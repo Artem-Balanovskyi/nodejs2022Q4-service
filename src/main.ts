@@ -1,11 +1,11 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule } from '@nestjs/swagger';
 import * as yaml from 'js-yaml';
 import { readFile } from 'fs/promises';
 import * as dotenv from 'dotenv';
 import { LoggerService } from './logger/logger.service';
-import { Logger } from '@nestjs/common';
+import { ClassSerializerInterceptor, Logger } from '@nestjs/common';
 
 dotenv.config();
 
@@ -15,6 +15,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new LoggerService(),
   });
+
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const document: any = yaml.load(
     await readFile('./doc/api.yaml', { encoding: 'utf-8' }),

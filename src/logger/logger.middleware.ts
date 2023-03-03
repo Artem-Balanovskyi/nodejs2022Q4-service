@@ -5,12 +5,12 @@ import { Request, Response, NextFunction } from 'express';
 export class LoggerMiddleware implements NestMiddleware {
   private readonly logger = new Logger('HTTP');
   use(req: Request, res: Response, next: NextFunction) {
-    const { url, method, query, body } = req;
+    const { baseUrl, method, query, body } = req;
     const userAgent = req.get('user-agent') || '';
 
     res.on('finish', async () => {
       const { statusCode } = res;
-      const message = `${method} ${url} queries: ${JSON.stringify(
+      const message = `${method} ${baseUrl} queries: ${JSON.stringify(
         query,
       )} body: ${JSON.stringify(
         body,

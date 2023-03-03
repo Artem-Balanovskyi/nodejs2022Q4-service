@@ -6,7 +6,6 @@ import { UserEntity } from './entities/user.entity';
 import { PASSWORD_NOT_CORRECT, USER_NOT_FOUND } from 'src/utils/messages';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { hash } from 'bcrypt';
 import 'dotenv/config';
 
 @Injectable()
@@ -17,10 +16,7 @@ export class UsersService {
   ) {}
 
   async create(dto: CreateUserDto): Promise<UserEntity> {
-    const { password } = dto;
-    const saltOrRounds = parseInt(process.env.CRYPT_SALT);
-    dto.password = await hash(password, saltOrRounds);
-    const createdUser = this.userRepository.create({ ...dto });
+    const createdUser = this.userRepository.create(dto);
     return await this.userRepository.save(createdUser);
   }
 

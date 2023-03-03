@@ -1,5 +1,6 @@
 import { Exclude, Transform } from 'class-transformer';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -7,6 +8,8 @@ import {
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
+import 'dotenv/config';
+import { hash } from 'bcrypt';
 
 @Entity('users')
 export class UserEntity {
@@ -19,6 +22,12 @@ export class UserEntity {
   @Exclude()
   @Column({ type: 'varchar', length: '255' })
   password: string;
+
+  @BeforeInsert()
+  async passwordHash() {
+    const saltOrRounds = parseInt(process.env.CRYPT_SALT);
+    this.password = await hash(this.password, saltOrRounds);
+  }
 
   @VersionColumn({ type: 'integer', default: 1 })
   version: number;

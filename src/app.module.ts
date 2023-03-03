@@ -11,10 +11,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { database } from './ormconfig';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { LoggerModule } from './logger/logger.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { CustomExceptionFilter } from './logger/custom-exception.filter';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth/auth.guard';
 
 const typeOrmConfig = {
   imports: [ConfigModule.forRoot({ load: [database] })],
@@ -31,6 +32,10 @@ const typeOrmConfig = {
     {
       provide: APP_FILTER,
       useClass: CustomExceptionFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
   imports: [

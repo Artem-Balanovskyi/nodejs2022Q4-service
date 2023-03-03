@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { throwException } from 'src/utils/throwException';
 import { UserEntity } from './entities/user.entity';
 import { PASSWORD_NOT_CORRECT, USER_NOT_FOUND } from 'src/utils/messages';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { compare } from 'bcrypt';
 import 'dotenv/config';
 
 @Injectable()
@@ -27,19 +31,25 @@ export class UsersService {
   async findOne(userId: string): Promise<UserEntity> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (user) return user;
-    throwException(USER_NOT_FOUND, 404);
+    throw new NotFoundException(USER_NOT_FOUND);
   }
 
-  async update(userId: string, dto: UpdatePasswordDto): Promise<UserEntity> {
+  async update(
+    userId: string,
+    { oldPassword, newPassword }: UpdatePasswordDto,
+  ): Promise<UserEntity> {
     const updatedUser: UserEntity = await this.userRepository.findOne({
       where: { id: userId },
     });
-    if (!updatedUser) throwException(USER_NOT_FOUND, 404);
-    if (updatedUser.password !== dto.oldPassword) {
-      throwException(PASSWORD_NOT_CORRECT, 403);
-    } else {
+    if (!updatedUser) throw new NotFoundException(USER_NOT_FOUND);
+
+    const isMatch = await compare(oldPassword, updatedUser.password);
+    console.log(`isMatch: ${isMatch}`);
+
+    if (!isMatch) throw new ForbiddenException(PASSWORD_NOT_CORRECT);
+    else {
       updatedUser.version += 1;
-      updatedUser.password = dto.newPassword;
+      updatedUser.password = newPassword;
       return await this.userRepository.save(updatedUser);
     }
   }
@@ -48,7 +58,7 @@ export class UsersService {
     const result = await this.userRepository.delete(userId);
 
     if (result.affected === 0) {
-      throwException(USER_NOT_FOUND, 404);
+      throw new NotFoundException(USER_NOT_FOUND);
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Exclude, Transform } from 'class-transformer';
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -24,6 +25,7 @@ export class UserEntity {
   password: string;
 
   @BeforeInsert()
+  @BeforeUpdate()
   async passwordHash() {
     const saltOrRounds = parseInt(process.env.CRYPT_SALT);
     this.password = await hash(this.password, saltOrRounds);

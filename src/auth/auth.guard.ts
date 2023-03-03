@@ -26,14 +26,12 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     try {
       const [scheme, token] = request.headers.authorization.split(' ');
-      console.log(`SCHEME: ${scheme}, TOKEN: ${token}`);
 
       if (!token || scheme !== 'Bearer') {
         throw new UnauthorizedException(
           'Access token is missing or wrong scheme',
         );
       }
-      console.log(`I AM HERE`);
       verify(token, process.env.JWT_SECRET_KEY) as JwtPayload;
     } catch {
       throw new UnauthorizedException('Access token is invalid');
